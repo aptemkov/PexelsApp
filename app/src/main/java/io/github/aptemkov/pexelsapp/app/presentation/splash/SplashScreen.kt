@@ -1,4 +1,4 @@
-package io.github.aptemkov.pexelsapp.app.presentation
+package io.github.aptemkov.pexelsapp.app.presentation.splash
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween

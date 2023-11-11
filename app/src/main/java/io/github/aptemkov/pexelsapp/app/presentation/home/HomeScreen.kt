@@ -83,7 +83,6 @@ fun HomeScreen(
     val history = remember { mutableStateListOf<String>() }
 
     Column {
-
         CustomSearchBar(
             text = searchText,
             active = active,
@@ -116,26 +115,22 @@ fun HomeScreen(
                 viewModel.changeSelectedId(it)
             }
         )
-        
-        //PhotoItem(url = "https://images.pexels.com/photos/3227984/pexels-photo-3227984.jpeg?auto=compress&cs=tinysrgb&h=650&w=940")
 
-        PhotosBlock(photos = photos)
-        
-        //////
-        Button(onClick = {
-            navController.navigate("details/testFromMain")
-        }
-        ) {
-            Text(text = "details")
-        }
-        ///////
+
+        PhotosBlock(
+            photos = photos,
+            onPhotoClicked = {
+                navController.navigate("details/$it")
+            }
+        )
     }
 }
 
 
 @Composable
 fun PhotosBlock(
-    photos: List<PhotoDomain>
+    photos: List<PhotoDomain>,
+    onPhotoClicked: (String) -> Unit,
 ) {
     LazyVerticalStaggeredGrid(
         modifier = Modifier
@@ -143,23 +138,31 @@ fun PhotosBlock(
             .padding(horizontal = 16.dp)
             .padding(top = 16.dp, bottom = 64.dp),
         columns = StaggeredGridCells.Fixed(2),
-//        contentPadding = PaddingValues(24.dp)
     ) {
         items(photos) {
-            PhotoItem(url = it.src.medium)
+            PhotoItem(
+                url = it.src.medium,
+                onClick = onPhotoClicked,
+                id = it.id
+            )
         }
     }
 }
 
 @Composable
 fun PhotoItem(
-    url: String
+    id: Int,
+    url: String,
+    onClick: (String) -> Unit = {},
 ) {
     AsyncImage(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxSize()
-            .clip(RoundedCornerShape(24.dp)),
+            .clip(RoundedCornerShape(24.dp))
+            .clickable {
+                onClick(id.toString())
+            },
         model = url,
         contentDescription = "Image",
         contentScale = ContentScale.FillWidth
@@ -182,7 +185,7 @@ fun FeaturedItemsBlock(
         contentPadding = PaddingValues(horizontal = 24.dp),
         horizontalArrangement = Arrangement.spacedBy(11.dp),
 
-    ) {
+        ) {
         items(items) { it ->
             FeaturedItem(
                 id = it.id,

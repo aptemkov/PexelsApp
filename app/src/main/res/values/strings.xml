@@ -2,4 +2,11 @@
     <string name="app_name">PexelsApp</string>
     <string name="pexels_app">Pexels\nApp.</string>
     <string name="logo_icon_description">Logo Icon</string>
+    <string name="download">Download</string>
+    <string name="download_started">Download started</string>
+    <string name="download_failed">Download failed (%1$s)</string>
+    <string name="name_surname">Name Surname</string>
+    <string name="you_havent_saved_anything_yet">You haven\'t saved anything yet</string>
+    <string name="explore">Explore</string>
+    <string name="image_not_found">Image not found</string>
 </resources>

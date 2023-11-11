@@ -6,17 +6,17 @@ import io.github.aptemkov.pexelsapp.data.models.asDomain
 import io.github.aptemkov.pexelsapp.domain.models.FeaturedCollectionDomain
 import io.github.aptemkov.pexelsapp.domain.models.PhotoDomain
 import io.github.aptemkov.pexelsapp.domain.repository.DataRepository
+import io.github.aptemkov.pexelsapp.utils.Constants.API_KEY
 
-class DataRepositoryImpl(private val apiService: ApiService) : DataRepository {
+class NetworkDataRepositoryImpl(private val apiService: ApiService) : DataRepository {
     override suspend fun getFeaturedCollectionsList(
-        apiKey: String,
         page: Int,
         per_page: Int
 
     ): List<FeaturedCollectionDomain> {
         val list = try {
              apiService
-                .getFeaturedCollections(apiKey, page, per_page)
+                .getFeaturedCollections(API_KEY, page, per_page)
                 .collections
                 .asDomain()
         } catch (e:Exception) {
@@ -28,13 +28,12 @@ class DataRepositoryImpl(private val apiService: ApiService) : DataRepository {
 
     override suspend fun getPhotosList(
         query: String,
-        apiKey: String,
         per_page: Int,
         page: Int
     ): List<PhotoDomain> {
         val list =  try{
             apiService
-                .getPhotos(apiKey, query, per_page, page)
+                .getPhotos(API_KEY, query, per_page, page)
                 .photos
                 .map { it.asDomain() }
         } catch (e: Exception) {
@@ -45,13 +44,12 @@ class DataRepositoryImpl(private val apiService: ApiService) : DataRepository {
     }
 
     override suspend fun getCuratedPhotosList(
-        apiKey: String,
         per_page: Int,
         page: Int
     ): List<PhotoDomain> {
         val list = try {
             apiService
-                .getCuratedPhotos(apiKey, per_page, page)
+                .getCuratedPhotos(API_KEY, per_page, page)
                 .photos
                 .map { it.asDomain() }
         } catch (e: Exception) {
@@ -61,10 +59,10 @@ class DataRepositoryImpl(private val apiService: ApiService) : DataRepository {
         return list
     }
 
-    override suspend fun getPhotoById(apiKey: String, id: Int): PhotoDomain? {
+    override suspend fun getPhotoById(id: Int): PhotoDomain? {
         val photo = try {
             apiService
-                .getPhotoById(apiKey, id)
+                .getPhotoById(API_KEY, id)
                 .asDomain()
         } catch (e: Exception) {
             null

@@ -1,10 +1,15 @@
 package io.github.aptemkov.pexelsapp.data.models
 
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import io.github.aptemkov.pexelsapp.domain.models.PhotoDomain
 import io.github.aptemkov.pexelsapp.domain.models.PhotoSrcDomain
 import java.io.Serializable
 
+@Entity("favourite_photos")
 data class Photo(
+    @PrimaryKey
     val id: Int,
     val width: Int,
     val height: Int,
@@ -13,6 +18,7 @@ data class Photo(
     val photographerUrl: String?,
     val photographerId: Int?,
     val avgColor: String?,
+    @Embedded(prefix = "src_")
     val src: PhotoSrc,
     val liked: Boolean,
     val alt: String
@@ -51,5 +57,30 @@ fun Photo.asDomain(): PhotoDomain {
         ),
         liked = this.liked,
         alt = this.alt
+    )
+}
+
+fun PhotoDomain.asPhoto(): Photo {
+    return Photo(
+        id = this.id,
+        width = this.width,
+        height = this.height,
+        url = this.url,
+        photographer = this.photographer,
+        photographerUrl = this.photographerUrl,
+        photographerId = this.photographerId,
+        avgColor = this.avgColor,
+        src = PhotoSrc(
+            original = this.src.original,
+            large2x = this.src.original,
+            large = this.src.original,
+            medium = this.src.original,
+            small = this.src.original,
+            portrait = this.src.original,
+            landscape = this.src.original,
+            tiny = this.src.original,
+        ),
+        liked = this.liked,
+        alt = this.alt,
     )
 }

@@ -3,11 +3,10 @@ package io.github.aptemkov.pexelsapp.app.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.aptemkov.pexelsapp.data.api.API_KEY
-import io.github.aptemkov.pexelsapp.data.models.FeaturedCollection
 import io.github.aptemkov.pexelsapp.domain.models.FeaturedCollectionDomain
 import io.github.aptemkov.pexelsapp.domain.models.PhotoDomain
 import io.github.aptemkov.pexelsapp.domain.repository.DataRepository
+import io.github.aptemkov.pexelsapp.utils.Constants.DEFAULT_PER_PAGE
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val dataRepository: DataRepository
-): ViewModel() {
+) : ViewModel() {
     val photos = MutableStateFlow<List<PhotoDomain>>(listOf())
     val featuredState = MutableStateFlow<List<FeaturedCollectionDomain>>(listOf())
     val searchText = MutableStateFlow<String>("")
@@ -23,19 +22,8 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val featuredCollections = dataRepository.getFeaturedCollectionsList(
-                apiKey = API_KEY,
-                page = 1,
-                per_page = 7
-            )
-            featuredState.emit(featuredCollections)
-
-            val curatedPhotos = dataRepository.getCuratedPhotosList(
-                apiKey = API_KEY,
-                per_page = 30,
-                page = 1
-            )
-            photos.emit(curatedPhotos)
+            getFeaturedCollections()
+            getCuratedPhotos()
         }
     }
 
@@ -50,12 +38,27 @@ class HomeViewModel @Inject constructor(
 
     suspend fun searchPhotos(text: String) {
         val newPhotosList = dataRepository.getPhotosList(
-            apiKey = API_KEY,
             query = text,
             page = 1,
-            per_page = 30
+            per_page = DEFAULT_PER_PAGE
         )
         photos.emit(newPhotosList)
+    }
+
+    suspend fun getFeaturedCollections() {
+        val featuredCollections = dataRepository.getFeaturedCollectionsList(
+            page = 1,
+            per_page = 7
+        )
+        featuredState.emit(featuredCollections)
+    }
+
+    suspend fun getCuratedPhotos() {
+        val curatedPhotos = dataRepository.getCuratedPhotosList(
+            per_page = DEFAULT_PER_PAGE,
+            page = 1
+        )
+        photos.emit(curatedPhotos)
     }
 
 
