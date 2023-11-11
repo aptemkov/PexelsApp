@@ -1,4 +1,4 @@
-package io.github.aptemkov.pexelsapp.navigation
+package io.github.aptemkov.pexelsapp.app.navigation
 
 import io.github.aptemkov.pexelsapp.R
 

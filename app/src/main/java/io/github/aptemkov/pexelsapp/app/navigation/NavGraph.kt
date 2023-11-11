@@ -1,13 +1,13 @@
-package io.github.aptemkov.pexelsapp.navigation
+package io.github.aptemkov.pexelsapp.app.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import io.github.aptemkov.pexelsapp.presentation.AnimatedSplashScreen
-import io.github.aptemkov.pexelsapp.presentation.BookmarksScreen
-import io.github.aptemkov.pexelsapp.presentation.DetailsScreen
-import io.github.aptemkov.pexelsapp.presentation.HomeScreen
+import io.github.aptemkov.pexelsapp.app.presentation.AnimatedSplashScreen
+import io.github.aptemkov.pexelsapp.app.presentation.BookmarksScreen
+import io.github.aptemkov.pexelsapp.app.presentation.details.DetailsScreen
+import io.github.aptemkov.pexelsapp.app.presentation.home.HomeScreen
 
 @Composable
 fun SetupNavGraph(

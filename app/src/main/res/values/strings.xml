@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">PexelsApp</string>
     <string name="pexels_app">Pexels\nApp.</string>
+    <string name="logo_icon_description">Logo Icon</string>
 </resources>

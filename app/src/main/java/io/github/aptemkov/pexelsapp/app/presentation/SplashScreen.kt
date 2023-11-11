@@ -1,4 +1,4 @@
-package io.github.aptemkov.pexelsapp.presentation
+package io.github.aptemkov.pexelsapp.app.presentation
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import io.github.aptemkov.pexelsapp.R
-import io.github.aptemkov.pexelsapp.navigation.Screen
+import io.github.aptemkov.pexelsapp.app.navigation.Screen
 import io.github.aptemkov.pexelsapp.ui.theme.Red
 import io.github.aptemkov.pexelsapp.ui.theme.White
 import kotlinx.coroutines.delay
@@ -70,7 +70,7 @@ fun Splash(alpha: Float) {
             Image(
                 modifier = Modifier.fillMaxSize(),
                 painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Logo Icon",
+                contentDescription = stringResource(R.string.logo_icon_description),
             )
             Text(
                 textAlign = TextAlign.End,

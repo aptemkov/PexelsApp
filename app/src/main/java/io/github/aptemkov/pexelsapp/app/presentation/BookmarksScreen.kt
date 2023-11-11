@@ -1,4 +1,4 @@
-package io.github.aptemkov.pexelsapp.presentation
+package io.github.aptemkov.pexelsapp.app.presentation
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
