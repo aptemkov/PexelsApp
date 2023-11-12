@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">PexelsApp</string>
-    <string name="pexels_app">Pexels\nApp.</string>
-    <string name="logo_icon_description">Logo Icon</string>
+    <string name="app_name" translatable="false">PexelsApp</string>
+    <string name="pexels_app" translatable="false">Pexels\nApp.</string>
+    <string name="logo_icon_description" translatable="false">Logo Icon</string>
     <string name="download">Download</string>
     <string name="download_started">Download started</string>
     <string name="download_failed">Download failed (%1$s)</string>
@@ -10,7 +10,9 @@
     <string name="explore">Explore</string>
     <string name="image_not_found">Image not found</string>
     <string name="search_placeholder">Search</string>
-    <string name="search_icon_description">Search icon</string>
-    <string name="history_icon_description">History icon</string>
-    <string name="no_network_icon">No network icon</string>
+    <string name="search_icon_description" translatable="false">Search icon</string>
+    <string name="history_icon_description" translatable="false">History icon</string>
+    <string name="no_network_icon" translatable="false">No network icon</string>
+    <string name="bookmarks_title">Bookmarks</string>
+    <string name="no_internet_connection">There is no Internet connection!</string>
 </resources>

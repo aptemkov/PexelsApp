@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="download">Скачать</string>
+    <string name="download_started">Загрузка началась</string>
+    <string name="download_failed">Ошибка загрузки (%1$s)</string>
+    <string name="name_surname">Имя Фамилия</string>
+    <string name="you_havent_saved_anything_yet">Вы ещё ничего не сохранили</string>
+    <string name="explore">На главную</string>
+    <string name="image_not_found">Изображение не найдено</string>
+    <string name="search_placeholder">Поиск</string>
+    <string name="bookmarks_title">Избранные</string>
+    <string name="no_internet_connection">Отсутствует подключение к интернету</string>
+</resources>

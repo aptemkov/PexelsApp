@@ -20,7 +20,7 @@ class AndroidDownloader(
             .setTitle("$fileName.jpg")
             .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "$fileName.jpg")
 
-        val a = try {
+        val result = try {
             Toast.makeText(
                 context,
                 context.getString(R.string.download_started),
@@ -36,6 +36,6 @@ class AndroidDownloader(
             -1
         }
 
-        return a
+        return result
     }
 }
