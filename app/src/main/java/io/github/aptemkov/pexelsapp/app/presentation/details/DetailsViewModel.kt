@@ -52,7 +52,6 @@ class DetailsViewModel @Inject constructor(
                 addToFavourites(photo)
                 isPhotoFavourite.value = true
             }
-            countPhotosById(photo.id)
         }
     }
 
