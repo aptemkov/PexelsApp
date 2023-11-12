@@ -1,6 +1,6 @@
 
 # Pexels App
-This app allows the user to find different high-quality photos according to their request using [Pexel's API](https://www.pexels.com/). 
+This app allows the user to find different high-quality photos according to their request using [Pexels API](https://www.pexels.com/). 
 
 ## Technologies
 - Android SDK
