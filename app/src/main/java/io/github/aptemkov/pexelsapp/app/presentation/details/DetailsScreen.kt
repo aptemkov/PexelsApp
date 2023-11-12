@@ -1,13 +1,14 @@
 package io.github.aptemkov.pexelsapp.app.presentation.details
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,30 +18,24 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.IconButton
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.FileDownload
-import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,6 +47,7 @@ import io.github.aptemkov.pexelsapp.R
 import io.github.aptemkov.pexelsapp.app.downloader.AndroidDownloader
 import io.github.aptemkov.pexelsapp.app.navigation.Screen
 import io.github.aptemkov.pexelsapp.app.presentation.bookmarks.EmptyScreen
+import io.github.aptemkov.pexelsapp.app.presentation.common.HorizontalProgressBar
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -74,6 +70,8 @@ fun DetailsScreen(
     }
     val downloader = AndroidDownloader(LocalContext.current)
 
+    val window = (LocalContext.current as Activity).window
+    window.statusBarColor = MaterialTheme.colorScheme.background.toArgb()
 
     Scaffold(
         modifier = Modifier.padding(horizontal = 24.dp),
@@ -91,6 +89,7 @@ fun DetailsScreen(
                 .padding(innerPadding)
                 .verticalScroll(scrollState)
         ) {
+            HorizontalProgressBar(loading = photo == null)
             if (photo != null) {
                 DetailsPhoto(url = photo?.src?.original)
 
@@ -245,6 +244,8 @@ fun DetailsPhoto(
                 .fillMaxWidth(),
             model = url,
             contentDescription = "Image",
+            placeholder = if (isSystemInDarkTheme()) painterResource(id = R.drawable.placeholder_dark)
+            else painterResource(id = R.drawable.placeholder_light)
         )
     }
 }

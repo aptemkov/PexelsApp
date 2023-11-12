@@ -1,12 +1,9 @@
 package io.github.aptemkov.pexelsapp.app.presentation.details
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.aptemkov.pexelsapp.data.db.FavouritesDatabase
 import io.github.aptemkov.pexelsapp.data.models.Photo
-import io.github.aptemkov.pexelsapp.data.models.PhotoSrc
 import io.github.aptemkov.pexelsapp.data.models.asPhoto
 import io.github.aptemkov.pexelsapp.domain.models.PhotoDomain
 import io.github.aptemkov.pexelsapp.domain.repository.DataRepository
@@ -14,7 +11,6 @@ import io.github.aptemkov.pexelsapp.domain.repository.DatabaseRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Named
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
@@ -26,7 +22,7 @@ class DetailsViewModel @Inject constructor(
     val isPhotoFavourite = MutableStateFlow<Boolean>(false)
 
     fun getPhotoFromHomeScreen(id: Int?) {
-        if(id != null) {
+        if (id != null) {
             viewModelScope.launch {
                 val photo = networkDataRepository.getPhotoById(id)
                 selectedPhoto.emit(photo)
@@ -37,7 +33,7 @@ class DetailsViewModel @Inject constructor(
     }
 
     fun getPhotoFromBookmarksScreen(id: Int?) {
-        if(id != null) {
+        if (id != null) {
             viewModelScope.launch {
                 val photo = databaseRepository.getPhotoById(id)
                 selectedPhoto.emit(photo)
@@ -49,10 +45,12 @@ class DetailsViewModel @Inject constructor(
     fun onFavouriteButtonClicked(photoDomain: PhotoDomain) {
         val photo = photoDomain.asPhoto()
         viewModelScope.launch {
-            if(isPhotoFavourite.value) {
+            if (isPhotoFavourite.value) {
                 removeFromFavourites(photo)
+                isPhotoFavourite.value = false
             } else {
                 addToFavourites(photo)
+                isPhotoFavourite.value = true
             }
             countPhotosById(photo.id)
         }

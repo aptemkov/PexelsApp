@@ -9,4 +9,8 @@
     <string name="you_havent_saved_anything_yet">You haven\'t saved anything yet</string>
     <string name="explore">Explore</string>
     <string name="image_not_found">Image not found</string>
+    <string name="search_placeholder">Search</string>
+    <string name="search_icon_description">Search icon</string>
+    <string name="history_icon_description">History icon</string>
+    <string name="no_network_icon">No network icon</string>
 </resources>

@@ -9,6 +9,7 @@ interface DataRepository {
         page: Int,
         per_page: Int
     ): List<FeaturedCollectionDomain>
+
     suspend fun getPhotosList(
         query: String,
         per_page: Int,

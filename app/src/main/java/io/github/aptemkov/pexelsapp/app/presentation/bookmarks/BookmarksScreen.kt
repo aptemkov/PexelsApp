@@ -1,7 +1,9 @@
 package io.github.aptemkov.pexelsapp.app.presentation.bookmarks
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,7 +24,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -33,6 +38,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import io.github.aptemkov.pexelsapp.R
 import io.github.aptemkov.pexelsapp.app.navigation.Screen
+import io.github.aptemkov.pexelsapp.app.presentation.common.HorizontalProgressBar
 import io.github.aptemkov.pexelsapp.app.presentation.details.CustomToolBar
 import io.github.aptemkov.pexelsapp.domain.models.PhotoDomain
 
@@ -41,6 +47,9 @@ fun BookmarksScreen(
     navController: NavHostController,
     viewModel: BookmarksViewModel = hiltViewModel()
 ) {
+    val window = (LocalContext.current as Activity).window
+    window.statusBarColor = MaterialTheme.colorScheme.background.toArgb()
+
     LaunchedEffect(Unit) {
         viewModel.getFavouritePhotos()
     }
@@ -59,6 +68,7 @@ fun BookmarksScreen(
                 .padding(horizontal = 16.dp)
                 .padding(top = 16.dp, bottom = 64.dp),
         ) {
+            HorizontalProgressBar(loading = favouritePhotos.isEmpty())
             if (favouritePhotos.isNotEmpty()) {
                 FavouritePhotosBlock(
                     photos = favouritePhotos,
@@ -160,7 +170,9 @@ fun FavouritePhotoItem(
                 },
             model = url,
             contentDescription = "Image",
-            contentScale = ContentScale.FillWidth
+            contentScale = ContentScale.FillWidth,
+            placeholder = if (isSystemInDarkTheme()) painterResource(id = R.drawable.placeholder_dark)
+            else painterResource(id = R.drawable.placeholder_light)
         )
         Box(
             modifier = Modifier

@@ -15,11 +15,11 @@ class NetworkDataRepositoryImpl(private val apiService: ApiService) : DataReposi
 
     ): List<FeaturedCollectionDomain> {
         val list = try {
-             apiService
+            apiService
                 .getFeaturedCollections(API_KEY, page, per_page)
                 .collections
                 .asDomain()
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             Log.d("testtest", "getFeaturedCollectionsList: $e")
             listOf()
         }
@@ -31,7 +31,7 @@ class NetworkDataRepositoryImpl(private val apiService: ApiService) : DataReposi
         per_page: Int,
         page: Int
     ): List<PhotoDomain> {
-        val list =  try{
+        val list = try {
             apiService
                 .getPhotos(API_KEY, query, per_page, page)
                 .photos

@@ -4,16 +4,14 @@ import android.util.Log
 import io.github.aptemkov.pexelsapp.data.db.FavouritesDatabase
 import io.github.aptemkov.pexelsapp.data.models.Photo
 import io.github.aptemkov.pexelsapp.data.models.asDomain
-import io.github.aptemkov.pexelsapp.domain.models.FeaturedCollectionDomain
 import io.github.aptemkov.pexelsapp.domain.models.PhotoDomain
-import io.github.aptemkov.pexelsapp.domain.repository.DataRepository
 import io.github.aptemkov.pexelsapp.domain.repository.DatabaseRepository
 import io.github.aptemkov.pexelsapp.utils.Constants.TAG
 
 
-class DatabaseRepositoryImpl (
+class DatabaseRepositoryImpl(
     private val db: FavouritesDatabase
-): DatabaseRepository {
+) : DatabaseRepository {
     override suspend fun getPhotoById(id: Int): PhotoDomain? {
         val photo = try {
             db.dao.getPhotoById(id).first()

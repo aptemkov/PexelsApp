@@ -1,10 +1,10 @@
 package io.github.aptemkov.pexelsapp.app.presentation.home
 
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.compose.foundation.Image
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,24 +12,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -39,31 +31,33 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.navigation.NavController
-
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
+import io.github.aptemkov.pexelsapp.R
+import io.github.aptemkov.pexelsapp.app.presentation.common.HorizontalProgressBar
 import io.github.aptemkov.pexelsapp.domain.models.FeaturedCollectionDomain
 import io.github.aptemkov.pexelsapp.domain.models.PhotoDomain
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -82,6 +76,9 @@ fun HomeScreen(
     var active by remember { mutableStateOf(false) }
     val history = remember { mutableStateListOf<String>() }
 
+    val window = (LocalContext.current as Activity).window
+    window.statusBarColor = MaterialTheme.colorScheme.background.toArgb()
+
     Column {
         CustomSearchBar(
             text = searchText,
@@ -94,7 +91,11 @@ fun HomeScreen(
                 history.add(index = 0, element = it)
                 active = false
                 coroutineScope.launch {
-                    viewModel.searchPhotos(it)
+                    if(it.isNotBlank()) {
+                        viewModel.searchPhotos(it)
+                    } else {
+                        viewModel.getCuratedPhotos()
+                    }
                 }
             },
             onActiveChanged = {
@@ -105,24 +106,67 @@ fun HomeScreen(
         FeaturedItemsBlock(
             selectedId = selectedFeaturedCollectionId,
             items = featuredList,
-            changeSearchText = {
-                viewModel.changeSearchText(it)
+            changeSearchText = { title, id ->
+                viewModel.changeSearchText(title)
+                viewModel.changeSelectedId(id)
                 coroutineScope.launch {
-                    viewModel.searchPhotos(it)
+                    viewModel.searchPhotos(title)
                 }
             },
-            changeSelectedId = {
-                viewModel.changeSelectedId(it)
-            }
         )
 
-
-        PhotosBlock(
-            photos = photos,
-            onPhotoClicked = {
-                navController.navigate("details/$it")
-            }
+        HorizontalProgressBar(
+            loading = photos.isEmpty()
         )
+        if (photos.isNotEmpty()) {
+            PhotosBlock(
+                photos = photos,
+                onPhotoClicked = {
+                    navController.navigate("details/$it")
+                }
+            )
+        } else {
+            EmptyScreen(
+                onRetryClicked = {
+                    coroutineScope.launch {
+                        if (searchText.isNotBlank()) {
+                            viewModel.searchPhotos(searchText)
+                        } else {
+                            viewModel.getCuratedPhotos()
+                        }
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun EmptyScreen(
+    onRetryClicked: () -> Unit,
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_no_network),
+                contentDescription = stringResource(R.string.no_network_icon),
+                tint = MaterialTheme.colorScheme.onBackground
+            )
+
+            Text(
+                text = stringResource(R.string.explore),
+                color = MaterialTheme.colorScheme.tertiary,
+                fontSize = 18.sp,
+                modifier = Modifier.clickable {
+                    onRetryClicked()
+                }
+            )
+        }
     }
 }
 
@@ -165,7 +209,9 @@ fun PhotoItem(
             },
         model = url,
         contentDescription = "Image",
-        contentScale = ContentScale.FillWidth
+        contentScale = ContentScale.FillWidth,
+        placeholder = if (isSystemInDarkTheme()) painterResource(id = R.drawable.placeholder_dark)
+        else painterResource(id = R.drawable.placeholder_light)
     )
 }
 
@@ -173,10 +219,8 @@ fun PhotoItem(
 fun FeaturedItemsBlock(
     selectedId: String,
     items: List<FeaturedCollectionDomain>,
-    changeSearchText: (String) -> Unit,
-    changeSelectedId: (String) -> Unit,
+    changeSearchText: (String, String) -> Unit,
 ) {
-    //var selectedId by remember { mutableStateOf("") }
 
     LazyRow(
         modifier = Modifier
@@ -188,12 +232,9 @@ fun FeaturedItemsBlock(
         ) {
         items(items) { it ->
             FeaturedItem(
-                id = it.id,
                 title = it.title,
-                onClick = { id ->
-                    changeSearchText(it.title)
-                    changeSelectedId(it.id)
-                    Log.i("testtest", "FeaturedItemsBlock: ${it.id} $selectedId")
+                onClick = {
+                    changeSearchText(it.title, it.id)
                 },
                 selected = it.id == selectedId
             )
@@ -204,10 +245,9 @@ fun FeaturedItemsBlock(
 
 @Composable
 fun FeaturedItem(
-    id: String,
     title: String,
     selected: Boolean,
-    onClick: (String) -> Unit
+    onClick: () -> Unit
 ) {
     val background =
         if (selected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary
@@ -218,7 +258,7 @@ fun FeaturedItem(
         modifier = Modifier
             .clip(RoundedCornerShape(100.dp))
             .background(background)
-            .clickable { onClick(id) },
+            .clickable { onClick() },
     ) {
         Text(
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
@@ -241,30 +281,36 @@ fun CustomSearchBar(
     onSearch: (String) -> Unit,
     onActiveChanged: (Boolean) -> Unit,
 ) {
+    LaunchedEffect(text) {
+        delay(2000L)
+        onSearch(text)
+    }
+
     SearchBar(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 12.dp, start = 24.dp, end = 24.dp),
+            .padding(top = 12.dp)
+            .padding(horizontal = if (active) 0.dp else 8.dp),
         query = text,
         onQueryChange = onQueryChanged,
         onSearch = onSearch,
         active = active,
         onActiveChange = onActiveChanged,
         placeholder = {
-            Text(text = "Search")
+            Text(text = stringResource(R.string.search_placeholder))
         },
         leadingIcon = {
             Icon(
-                imageVector = Icons.Default.Search,
+                painterResource(id = R.drawable.ic_search),
                 tint = MaterialTheme.colorScheme.tertiary,
-                contentDescription = "Search icon"
+                contentDescription = stringResource(R.string.search_icon_description)
             )
         },
         trailingIcon = {
             if (active) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Search icon",
+                    contentDescription = stringResource(R.string.search_icon_description),
                     modifier = Modifier.clickable {
                         if (text.isNotBlank()) {
                             onQueryChanged("")
@@ -294,7 +340,7 @@ fun CustomSearchBar(
                 Icon(
                     modifier = Modifier.padding(end = 10.dp),
                     imageVector = Icons.Default.History,
-                    contentDescription = "History icon",
+                    contentDescription = stringResource(R.string.history_icon_description),
                 )
                 Text(text = it)
             }

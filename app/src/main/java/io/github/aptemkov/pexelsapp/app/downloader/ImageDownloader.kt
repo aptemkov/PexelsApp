@@ -9,7 +9,7 @@ import io.github.aptemkov.pexelsapp.R
 
 class AndroidDownloader(
     private val context: Context
-): Downloader {
+) : Downloader {
     private val downloadManager = context.getSystemService(DownloadManager::class.java)
 
     override fun downloadFile(url: String, fileName: String): Long {
@@ -21,10 +21,18 @@ class AndroidDownloader(
             .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "$fileName.jpg")
 
         val a = try {
-            Toast.makeText(context, context.getString(R.string.download_started), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                context.getString(R.string.download_started),
+                Toast.LENGTH_SHORT
+            ).show()
             downloadManager.enqueue(request)
         } catch (e: Exception) {
-            Toast.makeText(context, context.getString(R.string.download_failed, e), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                context.getString(R.string.download_failed, e),
+                Toast.LENGTH_SHORT
+            ).show()
             -1
         }
 
