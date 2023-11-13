@@ -18,7 +18,7 @@ This app allows the user to find different high-quality photos according to thei
 
 ## Want to try?
 - Edit API key at `utils/constants.kt/API_KEY` to yours from [Pexels](https://www.pexels.com/api/). For your convenience I left my key there. After BitCUP I'll be moved to `local.properties`
-- You can also download APK [there](https://github.com/aptemkov/PexelsApp/releases/tag/v1.0.0)
+- You can also download APK [there](https://github.com/aptemkov/PexelsApp/releases/tag/v1.0.1)
 
 # 📸Screenshots
 
