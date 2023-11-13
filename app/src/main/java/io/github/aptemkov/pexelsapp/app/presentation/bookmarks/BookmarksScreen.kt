@@ -36,6 +36,7 @@ fun BookmarksScreen(
     }
 
     val favouritePhotos by viewModel.favouritePhotos.collectAsStateWithLifecycle()
+    val isErrorState by viewModel.isErrorState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -47,15 +48,15 @@ fun BookmarksScreen(
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            HorizontalProgressBar(loading = favouritePhotos.isEmpty())
-            if (favouritePhotos.isNotEmpty()) {
+            HorizontalProgressBar(loading = favouritePhotos.isEmpty() && !isErrorState)
+            if (favouritePhotos.isNotEmpty() && !isErrorState) {
                 BookmarkedPhotosBlock(
                     photos = favouritePhotos,
                     onPhotoClicked = {
                         navController.navigate("details/$it")
                     }
                 )
-            } else {
+            } else if(isErrorState){
                 EmptyScreen(
                     message = stringResource(R.string.you_havent_saved_anything_yet),
                     onExploreClicked = {

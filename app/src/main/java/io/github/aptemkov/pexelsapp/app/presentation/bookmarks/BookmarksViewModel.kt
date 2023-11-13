@@ -15,6 +15,7 @@ class BookmarksViewModel @Inject constructor(
 ) : ViewModel() {
 
     val favouritePhotos = MutableStateFlow<List<PhotoDomain>>(listOf())
+    val isErrorState = MutableStateFlow<Boolean>(false)
 
     init {
         viewModelScope.launch {
@@ -25,6 +26,7 @@ class BookmarksViewModel @Inject constructor(
     suspend fun getFavouritePhotos() {
         val photos = databaseRepository.getPhotosList()
         favouritePhotos.emit(photos)
+        isErrorState.value = photos.isEmpty()
     }
 
 }

@@ -31,7 +31,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
-
+    val isErrorState by viewModel.isErrorState.collectAsStateWithLifecycle()
     val photos by viewModel.photos.collectAsStateWithLifecycle()
     val featuredList by viewModel.featuredState.collectAsStateWithLifecycle()
     val searchText by viewModel.searchText.collectAsStateWithLifecycle()
@@ -84,16 +84,16 @@ fun HomeScreen(
         )
 
         HorizontalProgressBar(
-            loading = photos.isEmpty()
+            loading = photos.isEmpty() && !isErrorState
         )
-        if (photos.isNotEmpty()) {
+        if (photos.isNotEmpty() && !isErrorState) {
             PhotosBlock(
                 photos = photos,
                 onPhotoClicked = {
                     navController.navigate("details/$it")
                 }
             )
-        } else {
+        } else if(isErrorState) {
             EmptyScreen(
                 onRetryClicked = {
                     coroutineScope.launch {

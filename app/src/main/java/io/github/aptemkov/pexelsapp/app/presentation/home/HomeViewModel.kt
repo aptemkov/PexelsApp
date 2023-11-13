@@ -16,6 +16,7 @@ class HomeViewModel @Inject constructor(
     private val dataRepository: DataRepository
 ) : ViewModel() {
     val photos = MutableStateFlow<List<PhotoDomain>>(listOf())
+    val isErrorState = MutableStateFlow<Boolean>(false)
     val featuredState = MutableStateFlow<List<FeaturedCollectionDomain>>(listOf())
     val searchText = MutableStateFlow<String>("")
     val selectedFeaturedCollectionId = MutableStateFlow<String>("")
@@ -42,6 +43,7 @@ class HomeViewModel @Inject constructor(
             page = 1,
             per_page = DEFAULT_PER_PAGE
         )
+         isErrorState.value = newPhotosList.isEmpty()
          photos.emit(newPhotosList)
     }
 
@@ -58,6 +60,7 @@ class HomeViewModel @Inject constructor(
             per_page = DEFAULT_PER_PAGE,
             page = 1
         )
+        isErrorState.value = curatedPhotos.isEmpty()
         photos.emit(curatedPhotos)
     }
 
